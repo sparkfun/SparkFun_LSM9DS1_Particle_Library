@@ -1023,11 +1023,9 @@ uint8_t LSM9DS1::mReadByte(uint8_t subAddress)
 		return I2CreadByte(_mAddress, subAddress);
 	else if (settings.device.commInterface == IMU_MODE_SPI)
 		return SPIreadByte(_mAddress, subAddress);
-	
-	return 0;
 }
 
-void LSM9DS1::mReadBytes(uint8_t subAddress, uint8_t * dest, uint8_t count)
+uint8_t LSM9DS1::mReadBytes(uint8_t subAddress, uint8_t * dest, uint8_t count)
 {
 	// Whether we're using I2C or SPI, read multiple bytes using the
 	// accelerometer-specific I2C address or SPI CS pin.
@@ -1075,7 +1073,7 @@ uint8_t LSM9DS1::SPIreadByte(uint8_t csPin, uint8_t subAddress)
 	return temp;
 }
 
-void LSM9DS1::SPIreadBytes(uint8_t csPin, uint8_t subAddress,
+uint8_t LSM9DS1::SPIreadBytes(uint8_t csPin, uint8_t subAddress,
 							uint8_t * dest, uint8_t count)
 {
 	// To indicate a read, set bit 0 (msb) of first byte to 1
@@ -1092,6 +1090,8 @@ void LSM9DS1::SPIreadBytes(uint8_t csPin, uint8_t subAddress,
 		dest[i] = SPI.transfer(0x00); // Read into destination array
 	}
 	digitalWrite(csPin, HIGH); // Close communication
+	
+	return 1;
 }
 
 void LSM9DS1::initI2C()

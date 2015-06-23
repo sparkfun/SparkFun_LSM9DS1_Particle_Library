@@ -390,7 +390,7 @@ protected:
 	//	- count = Number of registers to be read.
 	// Output: No value is returned by the function, but the registers read are
 	// 		all stored in the *dest array given.
-	void SPIreadBytes(uint8_t csPin, uint8_t subAddress, 
+	uint8_t SPIreadBytes(uint8_t csPin, uint8_t subAddress, 
 							uint8_t * dest, uint8_t count);
 	
 	///////////////////
