@@ -47,6 +47,7 @@ This code is released under the MIT license.
 Distributed as-is; no warranty is given.
 *****************************************************************/
 #include "SparkFunLSM9DS1/SparkFunLSM9DS1.h"
+#include "math.h"
 
 //////////////////////////
 // LSM9DS1 Library Init //
@@ -223,16 +224,16 @@ float ax, float ay, float az, float mx, float my, float mz)
   else
     heading = atan2(mx, my);
     
-  heading -= DECLINATION * PI / 180;
+  heading -= DECLINATION * M_PI / 180;
   
-  if (heading > PI) heading -= (2 * PI);
-  else if (heading < -PI) heading += (2 * PI);
-  else if (heading < 0) heading += 2 * PI;
+  if (heading > M_PI) heading -= (2 * M_PI);
+  else if (heading < -M_PI) heading += (2 * M_PI);
+  else if (heading < 0) heading += 2 * M_PI;
   
   // Convert everything from radians to degrees:
-  heading *= 180.0 / PI;
-  pitch *= 180.0 / PI;
-  roll  *= 180.0 / PI;
+  heading *= 180.0 / M_PI;
+  pitch *= 180.0 / M_PI;
+  roll  *= 180.0 / M_PI;
   
   Serial.print("Pitch, Roll: ");
   Serial.print(pitch, 2);
