@@ -107,7 +107,7 @@ public:
 	// This function will read all six gyroscope output registers.
 	// The readings are stored in the class' gx, gy, and gz variables. Read
 	// those _after_ calling readGyro().
-	void readGyro();
+	uint8_t readGyro();
 	
 	// int16_t readGyro(axis) -- Read a specific axis of the gyroscope.
 	// [axis] can be any of X_AXIS, Y_AXIS, or Z_AXIS.
@@ -121,7 +121,7 @@ public:
 	// This function will read all six accelerometer output registers.
 	// The readings are stored in the class' ax, ay, and az variables. Read
 	// those _after_ calling readAccel().
-	void readAccel();
+	uint8_t readAccel();
 	
 	// int16_t readAccel(axis) -- Read a specific axis of the accelerometer.
 	// [axis] can be any of X_AXIS, Y_AXIS, or Z_AXIS.
@@ -135,7 +135,7 @@ public:
 	// This function will read all six magnetometer output registers.
 	// The readings are stored in the class' mx, my, and mz variables. Read
 	// those _after_ calling readMag().
-	void readMag();
+	uint8_t readMag();
 	
 	// int16_t readMag(axis) -- Read a specific axis of the magnetometer.
 	// [axis] can be any of X_AXIS, Y_AXIS, or Z_AXIS.
@@ -149,7 +149,7 @@ public:
 	// This function will read two temperature output registers.
 	// The combined readings are stored in the class' temperature variables. Read
 	// those _after_ calling readTemp().
-	void readTemp();
+	uint8_t readTemp();
 	
 	// calcGyro() -- Convert from RAW signed 16-bit value to degrees per second
 	// This function reads in a signed 16-bit value and returns the scaled
@@ -308,7 +308,7 @@ protected:
 	//	- count = The number of bytes to be read.
 	// Output: No value is returned, but the `dest` array will store
 	// 	the data read upon exit.
-	void mReadBytes(uint8_t subAddress, uint8_t * dest, uint8_t count);
+	uint8_t mReadBytes(uint8_t subAddress, uint8_t * dest, uint8_t count);
 	
 	// gWriteByte() -- Write a byte to a register in the gyroscope.
 	// Input:
@@ -332,7 +332,7 @@ protected:
 	//	- count = The number of bytes to be read.
 	// Output: No value is returned, but the `dest` array will store
 	// 	the data read upon exit.
-	void xgReadBytes(uint8_t subAddress, uint8_t * dest, uint8_t count);
+	uint8_t xgReadBytes(uint8_t subAddress, uint8_t * dest, uint8_t count);
 	
 	// xmWriteByte() -- Write a byte to a register in the accel/mag sensor.
 	// Input:
@@ -423,7 +423,7 @@ protected:
 	//	- count = Number of registers to be read.
 	// Output: No value is returned by the function, but the registers read are
 	// 		all stored in the *dest array given.
-	void I2CreadBytes(uint8_t address, uint8_t subAddress, uint8_t * dest, uint8_t count);
+	uint8_t I2CreadBytes(uint8_t address, uint8_t subAddress, uint8_t * dest, uint8_t count);
 };
 
 #endif // SFE_LSM9DS1_H //

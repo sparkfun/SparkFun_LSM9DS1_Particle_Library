@@ -493,70 +493,100 @@ uint8_t LSM9DS1::magAvailable(lsm9ds1_axis axis)
 	return ((status & (1<<axis)) >> axis);
 }
 
-void LSM9DS1::readAccel()
+uint8_t LSM9DS1::readAccel()
 {
 	uint8_t temp[6]; // We'll read six bytes from the accelerometer into temp	
-	xgReadBytes(OUT_X_L_XL, temp, 6); // Read 6 bytes, beginning at OUT_X_L_XL
-	ax = (temp[1] << 8) | temp[0]; // Store x-axis values into ax
-	ay = (temp[3] << 8) | temp[2]; // Store y-axis values into ay
-	az = (temp[5] << 8) | temp[4]; // Store z-axis values into az
-	if (_autoCalc)
+	uint8_t status = xgReadBytes(OUT_X_L_XL, temp, 6); // Read 6 bytes, beginning at OUT_X_L_XL
+	
+	if (status)
 	{
-		ax -= aBiasRaw[X_AXIS];
-		ay -= aBiasRaw[Y_AXIS];
-		az -= aBiasRaw[Z_AXIS];
+		ax = (temp[1] << 8) | temp[0]; // Store x-axis values into ax
+		ay = (temp[3] << 8) | temp[2]; // Store y-axis values into ay
+		az = (temp[5] << 8) | temp[4]; // Store z-axis values into az
+		if (_autoCalc)
+		{
+			ax -= aBiasRaw[X_AXIS];
+			ay -= aBiasRaw[Y_AXIS];
+			az -= aBiasRaw[Z_AXIS];
+		}
 	}
+	return status;
 }
 
 int16_t LSM9DS1::readAccel(lsm9ds1_axis axis)
 {
 	uint8_t temp[2];
 	int16_t value;
-	xgReadBytes(OUT_X_L_XL + (2 * axis), temp, 2);
-	value = (temp[1] << 8) | temp[0];
+	uint8_t status = xgReadBytes(OUT_X_L_XL + (2 * axis), temp, 2);
 	
-	if (_autoCalc)
-		value -= aBiasRaw[axis];
+	if (status)
+	{
+		value = (temp[1] << 8) | temp[0];
+		
+		if (_autoCalc)
+			value -= aBiasRaw[axis];
 	
-	return value;
+		return value;
+	}
+	else
+		return 0;
 }
 
-void LSM9DS1::readMag()
+uint8_t LSM9DS1::readMag()
 {
 	uint8_t temp[6]; // We'll read six bytes from the mag into temp	
-	mReadBytes(OUT_X_L_M, temp, 6); // Read 6 bytes, beginning at OUT_X_L_M
-	mx = (temp[1] << 8) | temp[0]; // Store x-axis values into mx
-	my = (temp[3] << 8) | temp[2]; // Store y-axis values into my
-	mz = (temp[5] << 8) | temp[4]; // Store z-axis values into mz
+	uint8_t status = mReadBytes(OUT_X_L_M, temp, 6); // Read 6 bytes, beginning at OUT_X_L_M
+	
+	if (status)
+	{
+		mx = (temp[1] << 8) | temp[0]; // Store x-axis values into mx
+		my = (temp[3] << 8) | temp[2]; // Store y-axis values into my
+		mz = (temp[5] << 8) | temp[4]; // Store z-axis values into mz
+	}
+	
+	return status;
 }
 
 int16_t LSM9DS1::readMag(lsm9ds1_axis axis)
 {
 	uint8_t temp[2];
-	mReadBytes(OUT_X_L_M + (2 * axis), temp, 2);
-	return (temp[1] << 8) | temp[0];
+	uint8_t status = mReadBytes(OUT_X_L_M + (2 * axis), temp, 2);
+	
+	if (status)
+		return (temp[1] << 8) | temp[0];
+	else
+		return 0;
 }
 
-void LSM9DS1::readTemp()
+uint8_t LSM9DS1::readTemp()
 {
 	uint8_t temp[2]; // We'll read two bytes from the temperature sensor into temp	
-	xgReadBytes(OUT_TEMP_L, temp, 2); // Read 2 bytes, beginning at OUT_TEMP_L
-	temperature = ((int16_t)temp[1] << 8) | temp[0];
+	uint8_t status = xgReadBytes(OUT_TEMP_L, temp, 2); // Read 2 bytes, beginning at OUT_TEMP_L
+	if (status)
+		temperature = ((int16_t)temp[1] << 8) | temp[0];
+	
+	return status;
 }
 
-void LSM9DS1::readGyro()
+uint8_t LSM9DS1::readGyro()
 {
 	uint8_t temp[6]; // We'll read six bytes from the gyro into temp
-	xgReadBytes(OUT_X_L_G, temp, 6); // Read 6 bytes, beginning at OUT_X_L_G
-	gx = (temp[1] << 8) | temp[0]; // Store x-axis values into gx
-	gy = (temp[3] << 8) | temp[2]; // Store y-axis values into gy
-	gz = (temp[5] << 8) | temp[4]; // Store z-axis values into gz
-	if (_autoCalc)
+	uint8_t status = xgReadBytes(OUT_X_L_G, temp, 6); // Read 6 bytes, beginning at OUT_X_L_G
+	
+	if (status)
 	{
-		gx -= gBiasRaw[X_AXIS];
-		gy -= gBiasRaw[Y_AXIS];
-		gz -= gBiasRaw[Z_AXIS];
+		gx = (temp[1] << 8) | temp[0]; // Store x-axis values into gx
+		gy = (temp[3] << 8) | temp[2]; // Store y-axis values into gy
+		gz = (temp[5] << 8) | temp[4]; // Store z-axis values into gz
+		if (_autoCalc)
+		{
+			gx -= gBiasRaw[X_AXIS];
+			gy -= gBiasRaw[Y_AXIS];
+			gz -= gBiasRaw[Z_AXIS];
+		}
 	}
+	
+	return status;
 }
 
 int16_t LSM9DS1::readGyro(lsm9ds1_axis axis)
@@ -975,14 +1005,14 @@ uint8_t LSM9DS1::xgReadByte(uint8_t subAddress)
 	return 0;
 }
 
-void LSM9DS1::xgReadBytes(uint8_t subAddress, uint8_t * dest, uint8_t count)
+uint8_t LSM9DS1::xgReadBytes(uint8_t subAddress, uint8_t * dest, uint8_t count)
 {
 	// Whether we're using I2C or SPI, read multiple bytes using the
 	// gyro-specific I2C address or SPI CS pin.
 	if (settings.device.commInterface == IMU_MODE_I2C)
-		I2CreadBytes(_xgAddress, subAddress, dest, count);
+		return I2CreadBytes(_xgAddress, subAddress, dest, count);
 	else if (settings.device.commInterface == IMU_MODE_SPI)
-		SPIreadBytes(_xgAddress, subAddress, dest, count);
+		return SPIreadBytes(_xgAddress, subAddress, dest, count);
 }
 
 uint8_t LSM9DS1::mReadByte(uint8_t subAddress)
@@ -1002,9 +1032,9 @@ void LSM9DS1::mReadBytes(uint8_t subAddress, uint8_t * dest, uint8_t count)
 	// Whether we're using I2C or SPI, read multiple bytes using the
 	// accelerometer-specific I2C address or SPI CS pin.
 	if (settings.device.commInterface == IMU_MODE_I2C)
-		I2CreadBytes(_mAddress, subAddress, dest, count);
+		return I2CreadBytes(_mAddress, subAddress, dest, count);
 	else if (settings.device.commInterface == IMU_MODE_SPI)
-		SPIreadBytes(_mAddress, subAddress, dest, count);
+		return SPIreadBytes(_mAddress, subAddress, dest, count);
 }
 
 void LSM9DS1::initSPI()
@@ -1089,7 +1119,7 @@ uint8_t LSM9DS1::I2CreadByte(uint8_t address, uint8_t subAddress)
 	return data;                             // Return data read from slave register
 }
 
-void LSM9DS1::I2CreadBytes(uint8_t address, uint8_t subAddress, uint8_t * dest, uint8_t count)
+uint8_t LSM9DS1::I2CreadBytes(uint8_t address, uint8_t subAddress, uint8_t * dest, uint8_t count)
 {  
 	unsigned long timeIn = millis();
 	
@@ -1109,8 +1139,8 @@ void LSM9DS1::I2CreadBytes(uint8_t address, uint8_t subAddress, uint8_t * dest, 
 		{
 			while (i < count)
 				dest[i++] = 0xFF;
-			break;
+			return 0;
 		}
 	}
-	//! Todo: Change the return type, and return something useful.
+	return 1;
 }
