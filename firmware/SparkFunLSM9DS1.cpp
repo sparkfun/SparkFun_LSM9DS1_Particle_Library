@@ -25,6 +25,8 @@ Distributed as-is; no warranty is given.
 #include "LSM9DS1_Types.h"
 #include "application.h"
 
+#define COMMUNICATION_TIMEOUT 1000 // Set timeout to 1s
+
 float magSensitivity[4] = {0.00014, 0.00029, 0.00043, 0.00058};
 
 LSM9DS1::LSM9DS1()
@@ -1089,6 +1091,8 @@ uint8_t LSM9DS1::I2CreadByte(uint8_t address, uint8_t subAddress)
 
 void LSM9DS1::I2CreadBytes(uint8_t address, uint8_t subAddress, uint8_t * dest, uint8_t count)
 {  
+	unsigned long timeIn = millis();
+	
 	Wire.beginTransmission(address);   // Initialize the Tx buffer
 	// Next send the register to be read. OR with 0x80 to indicate multi-read.
 	Wire.write(subAddress | 0x80);     // Put slave register address in Tx buffer
@@ -1101,9 +1105,7 @@ void LSM9DS1::I2CreadBytes(uint8_t address, uint8_t subAddress, uint8_t * dest, 
 		{
 			dest[i++] = Wire.read();
 		}
+		else if (timeIn + COMMUNICATION_TIMEOUT < millis())
+			break;
 	}
-	/*while (Wire.available()) 
-	{
-		dest[i++] = Wire.read(); // Put read results in the Rx buffer
-	}*/
 }
