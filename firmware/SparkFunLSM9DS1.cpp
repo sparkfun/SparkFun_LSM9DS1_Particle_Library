@@ -1105,7 +1105,12 @@ void LSM9DS1::I2CreadBytes(uint8_t address, uint8_t subAddress, uint8_t * dest, 
 		{
 			dest[i++] = Wire.read();
 		}
-		else if (timeIn + COMMUNICATION_TIMEOUT < millis())
+		if (timeIn + COMMUNICATION_TIMEOUT < millis())
+		{
+			while (i < count)
+				dest[i++] = 0xFF;
 			break;
+		}
 	}
+	//! Todo: Change the return type, and return something useful.
 }
