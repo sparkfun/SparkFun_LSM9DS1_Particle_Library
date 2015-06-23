@@ -23,7 +23,7 @@ Distributed as-is; no warranty is given.
 #include "SparkFunLSM9DS1.h"
 #include "LSM9DS1_Registers.h"
 #include "LSM9DS1_Types.h"
-#include "application.h
+#include "application.h"
 
 float magSensitivity[4] = {0.00014, 0.00029, 0.00043, 0.00058};
 
@@ -315,7 +315,6 @@ void LSM9DS1::initAccel()
 // is good practice.
 void LSM9DS1::calibrate(bool autoCalc)
 {  
-	uint8_t data[6] = {0, 0, 0, 0, 0, 0};
 	uint8_t samples = 0;
 	int ii;
 	int32_t aBiasRawTemp[3] = {0, 0, 0};
@@ -970,6 +969,8 @@ uint8_t LSM9DS1::xgReadByte(uint8_t subAddress)
 		return I2CreadByte(_xgAddress, subAddress);
 	else if (settings.device.commInterface == IMU_MODE_SPI)
 		return SPIreadByte(_xgAddress, subAddress);
+	
+	return 0;
 }
 
 void LSM9DS1::xgReadBytes(uint8_t subAddress, uint8_t * dest, uint8_t count)
@@ -990,6 +991,8 @@ uint8_t LSM9DS1::mReadByte(uint8_t subAddress)
 		return I2CreadByte(_mAddress, subAddress);
 	else if (settings.device.commInterface == IMU_MODE_SPI)
 		return SPIreadByte(_mAddress, subAddress);
+	
+	return 0;
 }
 
 void LSM9DS1::mReadBytes(uint8_t subAddress, uint8_t * dest, uint8_t count)
@@ -1090,7 +1093,7 @@ void LSM9DS1::I2CreadBytes(uint8_t address, uint8_t subAddress, uint8_t * dest, 
 	// Next send the register to be read. OR with 0x80 to indicate multi-read.
 	Wire.write(subAddress | 0x80);     // Put slave register address in Tx buffer
 	Wire.endTransmission(false);       // Send the Tx buffer, but send a restart to keep connection alive
-	uint8_t i = 0;
+	
 	Wire.requestFrom(address, count);  // Read bytes from slave register address 
 	for (int i=0; i<count;)
 	{
