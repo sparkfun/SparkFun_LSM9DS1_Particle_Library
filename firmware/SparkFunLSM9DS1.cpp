@@ -21,8 +21,8 @@ Distributed as-is; no warranty is given.
 ******************************************************************************/
 
 #include "SparkFunLSM9DS1.h"
-#include "util/LSM9DS1_Registers.h"
-#include "util/LSM9DS1_Types.h"
+#include "LSM9DS1_Registers.h"
+#include "LSM9DS1_Types.h"
 #include "application.h
 
 float magSensitivity[4] = {0.00014, 0.00029, 0.00043, 0.00058};

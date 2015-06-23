@@ -46,7 +46,7 @@ This code is released under the MIT license.
 
 Distributed as-is; no warranty is given.
 *****************************************************************/
-#include "SparkFunLSM9DS1.h"
+#include "SparkFunLSM9DS1/SparkFunLSM9DS1.h"
 
 //////////////////////////
 // LSM9DS1 Library Init //
