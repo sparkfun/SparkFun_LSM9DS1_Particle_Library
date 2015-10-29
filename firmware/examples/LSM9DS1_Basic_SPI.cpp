@@ -27,14 +27,17 @@ Hardware setup: This example demonstrates how to use the
 LSM9DS1 with an SPI interface.
 
 If you have the Photon IMU shield, no extra wiring is required.
+You will have to switch all jumpers on the backside from the
+default I2C interface over to SPI.
+
 If you're using a breakout, the pin-out is as follows:
 	     LSM9DS1 --------- Photon
-          CS_AG ------------- 9
-          CS_M ------------- 10
-          SDO_AG ----------- 12
-          SDO_M ------------ 12 (tied to SDO_AG)
-          SCL -------------- 13
-          SDA -------------- 11
+          CS_AG ------------ A1
+          CS_M ------------- A2
+          SDO_AG ----------- A4 (MISO)
+          SDO_M ------------ A4 (MISO) (tied to SDO_AG)
+          SCL -------------- A3 (SCK)
+          SDA -------------- A5 (MOSI)
           VDD -------------- 3.3V
           GND -------------- GND
 
@@ -62,8 +65,8 @@ LSM9DS1 imu;
 ///////////////////////
 // Define the pins used for our SPI chip selects. We're
 // using hardware SPI, so other signal pins are set in stone.
-#define LSM9DS1_M_CS	10 // Can be any digital pin
-#define LSM9DS1_AG_CS	9  // Can be any other digital pin
+#define LSM9DS1_M_CS	A2 // Can be any pin
+#define LSM9DS1_AG_CS	A1  // Can be any other pin
 
 ////////////////////////////
 // Sketch Output Settings //
@@ -100,7 +103,7 @@ void setup()
                   "Breakout, but may need to be modified " \
                   "if the board jumpers are.");
     while (1)
-      ;
+      Particle.process();
   }
 }
 
