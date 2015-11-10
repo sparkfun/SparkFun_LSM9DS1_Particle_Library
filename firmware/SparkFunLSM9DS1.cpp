@@ -1043,8 +1043,8 @@ void LSM9DS1::initSPI()
 	digitalWrite(_mAddress, HIGH);
 	
 	SPI.begin();
-	// Maximum SPI frequency is 10MHz, could divide by 2 here:
-	SPI.setClockDivider(SPI_CLOCK_DIV2);
+	// Maximum SPI frequency is 10MHz:
+	SPI.setClockDivider(SPI_CLOCK_DIV4); // Photon requires min. DIV4
 	// Data is read and written MSb first.
 	SPI.setBitOrder(MSBFIRST);
 	// Data is captured on rising edge of clock (CPHA = 0)
