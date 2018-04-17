@@ -17,7 +17,7 @@ Repository Contents
 * **/doc** - Additional documentation for the user. These files are ignored by the IDE. 
 * **/firmware** - Source files for the library (.cpp, .h).
 * **/firmware/examples** - Example sketches for the library (.cpp). Run these from the Particle IDE. 
-* **spark.json** - General library properties for the Particel library manager. 
+* **spark.json** - General library properties for the Particle library manager. 
 
 Example Usage
 -------------------
